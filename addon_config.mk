@@ -8,7 +8,8 @@ meta:
 common:
 	ADDON_DEPENDENCIES = ofxImGui
 
-	ADDON_INCLUDES = libs/ImGuiFileDialog/ImGuiFileDialog.h
+	ADDON_INCLUDES = src
+	ADDON_INCLUDES += libs/ImGuiFileDialog
 
 	ADDON_SOURCES = libs/ImGuiFileDialog/ImGuiFileDialog.cpp
 
