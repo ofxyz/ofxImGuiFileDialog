@@ -3,7 +3,7 @@ meta:
 	ADDON_DESCRIPTION = ImGuiFileDialog for openFrameworks - File dialog built entirely on Dear ImGui, no system dependencies.
 	ADDON_AUTHOR = aiekick (wrapped for OF by ofRasp)
 	ADDON_TAGS = "imgui" "dialog" "file"
-	ADDON_URL = https://github.com/ofrasp/ImGuiFileDialog
+	ADDON_URL = https://github.com/ofxyz/ImGuiFileDialog
 
 common:
 	ADDON_DEPENDENCIES = ofxImGui
