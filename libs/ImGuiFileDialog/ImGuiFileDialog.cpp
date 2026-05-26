@@ -549,13 +549,19 @@ public:
             wchar_t szVolumeName[2048];
             IGFD::PathDisplayedName path_name;
             for (auto& a : arr) {
+                if (a.empty()) {
+                    continue;
+                }
                 path_name.first = a;
                 path_name.second.clear();
                 std::wstring wpath = IGFD::Utils::UTF8Decode(a);
+                if (!wpath.empty() && wpath.back() != L'\\') {
+                    wpath += L'\\';
+                }
                 if (GetVolumeInformationW(wpath.c_str(), szVolumeName, 2048, nullptr, nullptr, nullptr, nullptr, 0)) {
                     path_name.second = IGFD::Utils::UTF8Encode(szVolumeName);
-                    res.push_back(path_name);
                 }
+                res.push_back(path_name);
             }
         }
 #endif  // _IGFD_WIN_
@@ -746,13 +752,19 @@ public:
             wchar_t szVolumeName[2048];
             IGFD::PathDisplayedName path_name;
             for (auto& a : arr) {
+                if (a.empty()) {
+                    continue;
+                }
                 path_name.first = a;
                 path_name.second.clear();
                 std::wstring wpath = IGFD::Utils::UTF8Decode(a);
+                if (!wpath.empty() && wpath.back() != L'\\') {
+                    wpath += L'\\';
+                }
                 if (GetVolumeInformationW(wpath.c_str(), szVolumeName, 2048, nullptr, nullptr, nullptr, nullptr, 0)) {
                     path_name.second = IGFD::Utils::UTF8Encode(szVolumeName);
-                    res.push_back(path_name);
                 }
+                res.push_back(path_name);
             }
         }
 #endif  // _IGFD_WIN_

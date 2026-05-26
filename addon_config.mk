@@ -13,6 +13,10 @@ common:
 
 	ADDON_SOURCES = libs/ImGuiFileDialog/ImGuiFileDialog.cpp
 
+	# ImGuiFileDialog.cpp must be rebuilt whenever ImGuiFileDialogConfig.h changes
+	# (e.g. USE_PLACES_FEATURE). If you see undefined IGFD::PlacesFeature::* refs,
+	# delete addons/obj/<platform>/Release/ofxImGuiFileDialog/ and rebuild.
+
 linux64:
 linuxarmv6l:
 linuxarmv7l:
