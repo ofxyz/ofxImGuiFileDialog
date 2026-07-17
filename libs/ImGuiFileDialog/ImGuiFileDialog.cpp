@@ -3767,7 +3767,13 @@ bool IGFD::KeyExplorerFeature::m_FlashableSelectable(const char* label, bool sel
             PopColumnsBackground();
     }
 
-    if (is_visible) RenderTextClipped(text_min, text_max, label, NULL, &label_size, style.SelectableTextAlign, &bb);
+    if (is_visible) {
+        // Ellipsis when the name does not fit the cell (RenderTextClipped just hard-clips).
+        if (label_size.x > (text_max.x - text_min.x))
+            RenderTextEllipsis(window->DrawList, text_min, text_max, text_max.x, label, NULL, &label_size);
+        else
+            RenderTextClipped(text_min, text_max, label, NULL, &label_size, style.SelectableTextAlign, &bb);
+    }
 
     // Automatically close popups
     if (pressed && (window->Flags & ImGuiWindowFlags_Popup) && !(flags & ImGuiSelectableFlags_NoAutoClosePopups) && (g.LastItemData.ItemFlags & ImGuiItemFlags_AutoClosePopups)) CloseCurrentPopup();
@@ -4009,7 +4015,8 @@ void IGFD::FileDialog::m_DrawContent() {
         if (m_PlacesPaneShown) {
             float otherWidth = size.x - m_PlacesPaneWidth;
             ImGui::PushID("splitterplaces");
-            IGFD::Utils::ImSplitter(true, 4.0f, &m_PlacesPaneWidth, &otherWidth, 10.0f, 10.0f + m_FileDialogInternal.getDialogConfig().sidePaneWidth, size.y);
+            // Thicker hit target so the bookmarks pane is easier to drag-resize.
+            IGFD::Utils::ImSplitter(true, 6.0f, &m_PlacesPaneWidth, &otherWidth, 120.0f, 10.0f + m_FileDialogInternal.getDialogConfig().sidePaneWidth, size.y);
             ImGui::PopID();
             size.x -= otherWidth;
             m_DrawPlacesPane(m_FileDialogInternal, size);
@@ -4261,12 +4268,20 @@ void IGFD::FileDialog::m_SelectableItem(int vRowIdx, std::shared_ptr<FileInfos> 
 
 void IGFD::FileDialog::m_DisplayFileInfosTooltip(const int32_t& vRowIdx, const int32_t& vColumnIdx, std::shared_ptr<FileInfos> vFileInfos) {
     // IsItemHovered is not sufficient since file size have two calls to Text
-    if ((ImGui::TableGetHoveredColumn() == vColumnIdx) &&  // column hovered
-        (ImGui::TableGetHoveredRow() == (vRowIdx + 1)) &&  // row hovered
-        (vFileInfos != nullptr) &&                         // fileinfo not null
-        (vFileInfos->tooltipColumn == vColumnIdx) &&       // good tooltip column
-        (!vFileInfos->tooltipMessage.empty())) {           // tooltip not empty
+    if ((ImGui::TableGetHoveredColumn() != vColumnIdx) ||  // column hovered
+        (ImGui::TableGetHoveredRow() != (vRowIdx + 1)) ||  // row hovered
+        (vFileInfos == nullptr)) {
+        return;
+    }
+    if (vFileInfos->tooltipColumn == vColumnIdx && !vFileInfos->tooltipMessage.empty()) {
         ImGui::SetTooltip("%s", vFileInfos->tooltipMessage.c_str());
+        return;
+    }
+    // File name column: show the full name when it does not fit the cell.
+    if (vColumnIdx == 0 && !vFileInfos->fileNameExt.empty()) {
+        const float colW = ImGui::GetColumnWidth();
+        if (ImGui::CalcTextSize(vFileInfos->fileNameExt.c_str()).x > colW - 8.0f)
+            ImGui::SetTooltip("%s", vFileInfos->fileNameExt.c_str());
     }
 }
 
@@ -4331,7 +4346,8 @@ void IGFD::FileDialog::m_DrawFileListView(ImVec2 vSize) {
 
     ImGui::PushID(this);
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Hideable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_NoHostExtendY
+    static ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Hideable |
+                                   ImGuiTableFlags_ScrollY | ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_Resizable
 #ifndef USE_CUSTOM_SORTING_ICON
                                    | ImGuiTableFlags_Sortable
 #endif  // USE_CUSTOM_SORTING_ICON
@@ -4513,7 +4529,8 @@ void IGFD::FileDialog::m_DrawThumbnailsListView(ImVec2 vSize) {
 
     ImGui::PushID(this);
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Hideable | ImGuiTableFlags_ScrollY | ImGuiTableFlags_NoHostExtendY
+    static ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_RowBg | ImGuiTableFlags_Hideable |
+                                   ImGuiTableFlags_ScrollY | ImGuiTableFlags_NoHostExtendY | ImGuiTableFlags_Resizable
 #ifndef USE_CUSTOM_SORTING_ICON
                                    | ImGuiTableFlags_Sortable
 #endif  // USE_CUSTOM_SORTING_ICON
