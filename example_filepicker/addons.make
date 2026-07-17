@@ -1,4 +1,5 @@
 ofxImGui
+ofxImGuiStyle
 ofxImGuiFileDialog
 ofxFft
 ofxLibTess2

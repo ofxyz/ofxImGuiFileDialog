@@ -3,6 +3,9 @@
 #include "ofMain.h"
 #include "ofxImGui.h"
 #include "ofxImGuiFileDialog.h"
+#include "ImTheme.h"
+#include "ImThemeRegistry.h"
+#include "ImFonts.h"
 
 class ofApp : public ofBaseApp {
 public:
@@ -11,28 +14,35 @@ public:
     void draw() override;
 
 private:
+    void drawDockspace();
+    void buildDefaultDockLayout(ImGuiID dockspaceId);
     void drawMenuBar();
+    void drawStatusBar();
     void drawFilePanel();
     void drawPreviewPanel();
     void drawDialogs();
+    void openFileDialog();
+    void openSaveDialog();
     void loadPreview(const std::string& path);
+    bool isImageFile(const std::string& path);
 
     ofxImGui::Gui gui;
 
-    // Dialog state
+    std::string currentThemeId = "DarculaDarker";
+    float uiScale = 1.0f;
+    bool defaultDockLayoutBuilt = false;
+
     std::string openedFilePath;
     std::string savedFilePath;
-    std::string statusMessage = "No file selected.";
+    std::string statusMessage = "Pick a file to get started.";
 
-    // Preview
     ofImage previewImage;
     bool hasPreview = false;
-    bool isImageFile(const std::string& path);
+    float previewZoom = 1.0f;
 
-    // History
     std::vector<std::string> recentFiles;
     static constexpr int MAX_RECENT = 8;
 
-    // UI state
     bool showDemoWindow = false;
+    bool showThemePanel = false;
 };

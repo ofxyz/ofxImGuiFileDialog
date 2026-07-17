@@ -3,7 +3,7 @@
 
 int main() {
     ofGLFWWindowSettings settings;
-    settings.setSize(1024, 600);
+    settings.setSize(1180, 720);
     settings.windowMode = OF_WINDOW;
     settings.title = "ofxImGuiFileDialog — File Picker Demo";
     settings.resizable = true;
