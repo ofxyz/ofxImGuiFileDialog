@@ -1,6 +1,6 @@
 # ofxImGuiFileDialog
 
-openFrameworks addon wrapping [ImGuiFileDialog](https://github.com/ofrasp/ImGuiFileDialog) by aiekick.
+openFrameworks addon wrapping [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) by aiekick.
 
 ![preview](preview.png)
 
@@ -44,4 +44,4 @@ if (ImGuiFileDialog::Instance()->Display("OpenKey")) {
 
 ## License
 
-ImGuiFileDialog is MIT licensed. See [https://github.com/ofrasp/ImGuiFileDialog](https://github.com/ofrasp/ImGuiFileDialog).
+[ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog) is MIT licensed. (Stephane Cuillerdier (aka Aiekick))
